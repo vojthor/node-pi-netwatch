@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "jvsdisplayotron": "^1.1.0",
     "node-nmap": "^4.0.0"
   }
 }
