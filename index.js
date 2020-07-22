@@ -3,10 +3,10 @@ require("dotenv").config();
 const nmap = require("node-nmap");
 const JVSDisplayOTron = require("jvsdisplayotron");
 
-const useDisplay = process.env.USE_DISPLAY;
+const useDisplay = JSON.parse(process.env.USE_DISPLAY);
+const dothat = new JVSDisplayOTron.DOTHAT();
 
 if (useDisplay) {
-  const dothat = new JVSDisplayOTron.DOTHAT();
   dothat.barGraph.setBrightness(0, 15);
   dothat.lcd.setContrast(45);
   dothat.backlight.setToHue(0.6);
@@ -43,14 +43,14 @@ const scanTheNetwork = async () => {
     let blinkTimeout;
     let graphState = true;
 
-    function blinkBlink() {
-      blinkTimeout = setTimeout(() => {
-        console.log("blink blink");
-        dothat.barGraph.setByPercentage(graphState ? 100 : 0);
-        graphState = !graphState;
-        blinkBlink();
-      }, 1000);
-    }
+    // function blinkBlink() {
+    //   blinkTimeout = setTimeout(() => {
+    //     console.log("blink blink");
+    //     dothat.barGraph.setByPercentage(graphState ? 100 : 0);
+    //     graphState = !graphState;
+    //     blinkBlink();
+    //   }, 1000);
+    // }
 
     // blinkBlink();
 
