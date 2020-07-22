@@ -3,11 +3,15 @@ require("dotenv").config();
 const nmap = require("node-nmap");
 const JVSDisplayOTron = require("jvsdisplayotron");
 
-const dothat = new JVSDisplayOTron.DOTHAT();
-dothat.barGraph.setBrightness(0, 15);
-dothat.lcd.setContrast(45);
-dothat.backlight.setToHue(0.6);
-dothat.lcd.write("Scanning...");
+const useDisplay = process.env.USE_DISPLAY;
+
+if (useDisplay) {
+  const dothat = new JVSDisplayOTron.DOTHAT();
+  dothat.barGraph.setBrightness(0, 15);
+  dothat.lcd.setContrast(45);
+  dothat.backlight.setToHue(0.6);
+  dothat.lcd.write("Scanning...");
+}
 
 nmap.nmapLocation = "nmap"; //default
 
@@ -55,12 +59,13 @@ const scanTheNetwork = async () => {
     }
 
     quickscan.on("complete", async (data) => {
-      displayTotalDevices(data.length);
       await asyncForEach(data, async (host) => {
         await waitFor(6000);
-        dothat.lcd.clear();
-        displayTotalDevices(data.length);
-        displayIpAndHost(host);
+        if (useDisplay) {
+          dothat.lcd.clear();
+          displayTotalDevices(data.length);
+          displayIpAndHost(host);
+        }
         console.log(host);
       });
 
