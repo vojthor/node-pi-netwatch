@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const nmap = require("node-nmap");
 const JVSDisplayOTron = require("jvsdisplayotron");
 
@@ -22,10 +24,17 @@ async function asyncForEach(array, callback) {
   }
 }
 
+const displayIpAndHost = (host) => {
+  dothat.lcd.setCursorPosition(0, 0);
+  dothat.lcd.write(host.ip);
+  dothat.lcd.setCursorPosition(0, 1);
+  dothat.lcd.write(host.hostname ? host.hostname.replace(".lan", "") : " ");
+};
+
 const scanTheNetwork = async () => {
   return new Promise((resolve) => {
     console.log("new run");
-    const quickscan = new nmap.QuickScan("192.168.1.0/24");
+    const quickscan = new nmap.QuickScan(process.env.LAN_IP);
 
     let blinkTimeout;
     let graphState = true;
@@ -51,15 +60,12 @@ const scanTheNetwork = async () => {
         await waitFor(6000);
         dothat.lcd.clear();
         displayTotalDevices(data.length);
-        dothat.lcd.setCursorPosition(0, 0);
-        dothat.lcd.write(host.ip);
-        dothat.lcd.setCursorPosition(0, 1);
-        dothat.lcd.write(host.hostname ? host.hostname : " ");
+        displayIpAndHost(host);
         console.log(host);
       });
 
       // cancelBlink();
-      scanTheNetwork();
+      return scanTheNetwork();
     });
 
     quickscan.on("error", function (error) {
@@ -69,9 +75,7 @@ const scanTheNetwork = async () => {
 };
 
 async function runTheStuff() {
-  while (true) {
-    await scanTheNetwork();
-  }
+  await scanTheNetwork();
 }
 
 runTheStuff();
