@@ -5,6 +5,7 @@ const JVSDisplayOTron = require("jvsdisplayotron");
 
 const useDisplay = JSON.parse(process.env.USE_DISPLAY);
 const dothat = new JVSDisplayOTron.DOTHAT();
+const signalClient = require("./signalClient");
 
 if (useDisplay) {
   dothat.barGraph.setBrightness(0, 15);
@@ -66,6 +67,7 @@ const scanTheNetwork = async () => {
           displayTotalDevices(data.length);
           displayIpAndHost(host);
         }
+        signalClient.sendMsg(host.ip);
         console.log(host);
       });
 
